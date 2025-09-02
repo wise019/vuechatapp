@@ -121,35 +121,18 @@ export default {
       moreActions: [
         { name: '清空聊天记录', color: '#ee0a24' },
         { name: '举报用户', color: '#ff976a' }
-      ],
-      messages: [
-        {
-          id: 1,
-          content: 'Hello, how are you?',
-          isMine: false,
-          userName: 'John',
-          avatar: '/images/avatar1.png',
-          timestamp: Date.now()
-        },
-        {
-          id: 2,
-          content: '我很好，谢谢！',
-          isMine: true,
-          userName: 'Me',
-          timestamp: Date.now()
-        }
       ]
     }
   },
   computed: {
-    ...mapState(['currentChat', 'user']),
+    ...mapState(['messages', 'currentChat', 'user']),
     chatTitle() {
       return this.currentChat ? this.currentChat.name : '聊天'
     }
   },
   methods: {
     ...mapActions(['sendMessage', 'fetchMessages']),
-    ...mapMutations(['addMessage']),
+    ...mapMutations(['addMessage', 'setMessages']),
 
     async send() {
       if (!this.messageInput.trim()) {
@@ -168,8 +151,8 @@ export default {
           timestamp: Date.now()
         }
 
-        // 添加到本地消息列表
-        this.messages.push(newMessage)
+        // 写入 Vuex
+        this.addMessage(newMessage)
 
         // 发送到服务器
         const result = await this.sendMessage({
@@ -248,7 +231,7 @@ export default {
           title: '确认清空',
           message: '确定要清空聊天记录吗？此操作不可恢复。'
         }).then(() => {
-          this.messages = []
+          this.setMessages([])
           this.$toast.success('聊天记录已清空')
         }).catch(() => {})
       } else if (action.name === '举报用户') {
@@ -268,7 +251,7 @@ export default {
     simulateReceiveMessage() {
       // 模拟定期接收消息
       setTimeout(() => {
-        this.messages.push({
+        this.addMessage({
           id: Date.now(),
           content: 'This is a simulated message',
           isMine: false,
