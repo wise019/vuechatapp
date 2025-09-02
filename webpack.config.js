@@ -82,6 +82,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        VUE_APP_API_BASE_URL: JSON.stringify(process.env.VUE_APP_API_BASE_URL || ''),
         VUE_APP_PUSHER_APP_KEY: JSON.stringify(process.env.VUE_APP_PUSHER_APP_KEY || ''),
         VUE_APP_PUSHER_APP_CLUSTER: JSON.stringify(process.env.VUE_APP_PUSHER_APP_CLUSTER || 'ap3'),
         VUE_APP_CLIENT_ID: JSON.stringify(process.env.VUE_APP_CLIENT_ID || '2'),
