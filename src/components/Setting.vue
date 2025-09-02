@@ -89,10 +89,10 @@
 
       <!-- 退出登录 -->
       <div class="setting__logout">
-        <van-button 
-          type="danger" 
-          size="large" 
-          @click="logout"
+        <van-button
+          type="danger"
+          size="large"
+          @click="handleLogout"
         >
           退出登录
         </van-button>
@@ -173,7 +173,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setLanguage', 'setTheme', 'clearUserData']),
+    ...mapMutations(['setLanguage', 'setTheme']),
     ...mapActions(['logout']),
 
     editProfile() {
@@ -246,15 +246,12 @@ export default {
       this.$toast('隐私政策页面开发中...')
     },
 
-    async logout() {
+    async handleLogout() {
       this.$dialog.confirm({
         title: '退出登录',
         message: '确定要退出当前账号吗？'
       }).then(() => {
-        // 清除用户数据
-        this.clearUserData()
-        localStorage.removeItem('authUser')
-        
+        this.logout()
         this.$toast.success('已退出登录')
         this.$router.push('/login')
       }).catch(() => {})
