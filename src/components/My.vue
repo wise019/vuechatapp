@@ -231,6 +231,23 @@ export default {
 
     editProfile() {
       this.$router.push('/profile')
+    },
+
+    async fetchStats() {
+      try {
+        // 这里应该调用API获取实际数据
+        // const response = await this.$api.get('/user/stats')
+        // this.todayMessages = response.data.todayMessages
+        // this.friendCount = response.data.friendCount
+
+        // 模拟数据
+        setTimeout(() => {
+          this.todayMessages = Math.floor(Math.random() * 50)
+          this.friendCount = Math.floor(Math.random() * 20) + 1
+        }, 1000)
+      } catch (error) {
+        console.error('获取统计数据失败:', error)
+      }
     }
   },
 
@@ -242,27 +259,6 @@ export default {
 
     // 模拟获取消息统计数据
     this.fetchStats()
-  },
-
-  methods: {
-    ...this.methods,
-    
-    async fetchStats() {
-      try {
-        // 这里应该调用API获取实际数据
-        // const response = await this.$api.get('/user/stats')
-        // this.todayMessages = response.data.todayMessages
-        // this.friendCount = response.data.friendCount
-        
-        // 模拟数据
-        setTimeout(() => {
-          this.todayMessages = Math.floor(Math.random() * 50)
-          this.friendCount = Math.floor(Math.random() * 20) + 1
-        }, 1000)
-      } catch (error) {
-        console.error('获取统计数据失败:', error)
-      }
-    }
   }
 }
 </script>

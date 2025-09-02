@@ -263,18 +263,8 @@ export default {
           container.scrollTop = container.scrollHeight
         }
       })
-    }
-  },
+    },
 
-  mounted() {
-    this.scrollToBottom()
-    // 模拟接收消息
-    this.simulateReceiveMessage()
-  },
-
-  methods: {
-    ...this.methods,
-    
     simulateReceiveMessage() {
       // 模拟定期接收消息
       setTimeout(() => {
@@ -289,6 +279,12 @@ export default {
         this.scrollToBottom()
       }, 3000)
     }
+  },
+
+  mounted() {
+    this.scrollToBottom()
+    // 模拟接收消息
+    this.simulateReceiveMessage()
   }
 }
 </script>
