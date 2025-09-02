@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1989fa">
+  
+  <title>Vue聊天应用 - 支持多语言实时翻译</title>
+  <meta name="description" content="一个基于Vue.js开发的现代化聊天应用，支持多语言实时翻译功能">
+  <meta name="keywords" content="Vue,聊天,翻译,多语言,实时通讯">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Vue聊天应用">
+  <meta property="og:description" content="支持多语言实时翻译的聊天应用">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="<%= BASE_URL %>images/og-image.png">
+  
+  <!-- 图标 -->
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <link rel="apple-touch-icon" href="<%= BASE_URL %>images/apple-touch-icon.png">
+  <link rel="manifest" href="<%= BASE_URL %>manifest.json">
+  
+  <!-- 预加载关键资源 -->
+  <link rel="preload" href="<%= BASE_URL %>fonts/PingFang-SC-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  
+  <!-- PWA相关 -->
+  <meta name="apple-mobile-web-app-title" content="Vue Chat">
+  <meta name="application-name" content="Vue Chat">
+  <meta name="msapplication-TileColor" content="#1989fa">
+  <meta name="msapplication-config" content="<%= BASE_URL %>browserconfig.xml">
+  
+  <!-- DNS预解析 -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//api.yourapp.com">
+  
+  <style>
+    /* 首屏加载样式 */
+    #app {
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    /* Loading动画 */
+    .initial-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f7f8fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .loading-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .loading-text {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1989fa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 隐藏loading */
+    .loaded .initial-loading {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <noscript>
+    <div style="text-align: center; padding: 50px;">
+      <h2>抱歉，您需要启用JavaScript才能运行此应用程序。</h2>
+      <p>Please enable JavaScript to run this application.</p>
+    </div>
+  </noscript>
+  
+  <div id="app">
+    <!-- 首屏Loading -->
+    <div class="initial-loading">
+      <div class="loading-logo">💬</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">正在加载应用...</div>
+    </div>
+  </div>
+  
+  <script>
+    // 隐藏loading的函数
+    window.hideInitialLoading = function() {
+      setTimeout(function() {
+        document.body.classList.add('loaded')
+        setTimeout(function() {
+          var loading = document.querySelector('.initial-loading')
+          if (loading) {
+            loading.remove()
+          }
+        }, 500)
+      }, 100)
+    }
+    
+    // 全局错误处理
+    window.addEventListener('error', function(event) {
+      console.error('全局错误:', event.error)
+    })
+    
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('未处理的Promise rejection:', event.reason)
+    })
+    
+    // PWA相关
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+          console.log('SW registered: ', registration)
+        }).catch(function(registrationError) {
+          console.log('SW registration failed: ', registrationError)
+        })
+      })
+    }
+    
+    // 请求通知权限
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission()
+    }
+  </script>
+</body>
+</html>
