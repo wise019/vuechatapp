@@ -80,13 +80,16 @@ module.exports = {
       favicon: './public/favicon.ico'
     }),
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-        VUE_APP_PUSHER_APP_KEY: JSON.stringify(process.env.VUE_APP_PUSHER_APP_KEY || ''),
-        VUE_APP_PUSHER_APP_CLUSTER: JSON.stringify(process.env.VUE_APP_PUSHER_APP_CLUSTER || 'ap3'),
-        VUE_APP_CLIENT_ID: JSON.stringify(process.env.VUE_APP_CLIENT_ID || '2'),
-        VUE_APP_CLIENT_SECRET: JSON.stringify(process.env.VUE_APP_CLIENT_SECRET || '')
-      }
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.VUE_APP_PUSHER_APP_KEY': JSON.stringify(process.env.VUE_APP_PUSHER_APP_KEY || ''),
+      'process.env.VUE_APP_PUSHER_APP_CLUSTER': JSON.stringify(process.env.VUE_APP_PUSHER_APP_CLUSTER || 'ap3'),
+      'process.env.VUE_APP_CLIENT_ID': JSON.stringify(process.env.VUE_APP_CLIENT_ID || '2'),
+      'process.env.VUE_APP_CLIENT_SECRET': JSON.stringify(process.env.VUE_APP_CLIENT_SECRET || ''),
+      'process.env.VUE_APP_API_BASE_URL': JSON.stringify(process.env.VUE_APP_API_BASE_URL || ''),
+      'process.env.VUE_APP_API_TIMEOUT': JSON.stringify(process.env.VUE_APP_API_TIMEOUT || ''),
+      'process.env.VUE_APP_PUSHER_FORCE_TLS': JSON.stringify(process.env.VUE_APP_PUSHER_FORCE_TLS || ''),
+      'process.env.VUE_APP_WEBSOCKET_HOST': JSON.stringify(process.env.VUE_APP_WEBSOCKET_HOST || ''),
+      'process.env.VUE_APP_WEBSOCKET_PORT': JSON.stringify(process.env.VUE_APP_WEBSOCKET_PORT || '')
     })
   ],
   optimization: {
