@@ -70,6 +70,8 @@ VUE_APP_WEBSOCKET_HOST=localhost
 VUE_APP_WEBSOCKET_PORT=6001
 ```
 
+`VUE_APP_API_BASE_URL` 用于配置后端 API 地址，未设置时默认指向 `http://localhost:8000/api`。
+
 ## 部署
 
 执行 `npm run build` 后，会在 `dist/` 目录生成静态文件，可使用任意静态服务器（如 Nginx、Node `serve`）部署。确保后端 API 与 WebSocket 服务已正确配置并且环境变量一致。

@@ -5,9 +5,7 @@ import { Toast } from 'vant'
 
 // 创建axios实例
 const http = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' 
-    ? 'https://api.yourapp.com' 
-    : 'http://localhost:8000/api',
+  baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
