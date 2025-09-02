@@ -56,7 +56,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-import OAuth from '@/utils/oauth'
 
 export default {
   name: 'Login',
@@ -77,7 +76,7 @@ export default {
   },
   methods: {
     ...mapActions(['login']),
-    
+
     async submit() {
       // 清除之前的错误
       this.errors = {}
@@ -103,15 +102,17 @@ export default {
       this.loadingLogin = true
 
       try {
-        // 调用OAuth登录
-        const result = await OAuth.request(this.forms.email, this.forms.password)
-        
-        if (result) {
+        const result = await this.login({
+          email: this.forms.email,
+          password: this.forms.password
+        })
+
+        if (result && result.success) {
           this.$toast.success('登录成功')
-          // 跳转到首页
           this.$router.push('/home')
         } else {
-          this.$toast.fail('登录失败，请检查邮箱和密码')
+          const message = result && result.message ? result.message : '登录失败，请检查邮箱和密码'
+          this.$toast.fail(message)
         }
       } catch (error) {
         console.error('登录错误:', error)
@@ -120,17 +121,6 @@ export default {
         this.loadingLogin = false
       }
     },
-
-    // 处理表单错误
-    handleErrors(errorResponse) {
-      if (errorResponse.data && errorResponse.data.errors) {
-        this.errors = {}
-        const errors = errorResponse.data.errors
-        Object.keys(errors).forEach(key => {
-          this.errors[key] = errors[key][0]
-        })
-      }
-    }
   }
 }
 </script>
