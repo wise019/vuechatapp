@@ -16,7 +16,7 @@ cp .env.example .env
 
 ```bash
 # 启动开发服务器
-npm run dev
+npm run serve
 
 # 构建生产包
 npm run build
