@@ -12,7 +12,9 @@ export default new Vuex.Store({
     currentChat: null, // 当前聊天对象
     unreadCount: 0, // 未读消息数量
     language: 'zh', // 当前语言
-    theme: 'light' // 主题模式
+    theme: 'light', // 主题模式
+    onlineUsers: [], // 当前在线用户
+    readMessages: [] // 已读消息ID
   },
 
   mutations: {
@@ -49,6 +51,38 @@ export default new Vuex.Store({
     // 更新未读消息数量
     updateUnreadCount(state, count) {
       state.unreadCount = count
+    },
+
+    // 设置在线用户列表
+    setOnlineUsers(state, users) {
+      state.onlineUsers = users
+    },
+
+    // 添加在线用户
+    addOnlineUser(state, user) {
+      if (!state.onlineUsers.some(u => u.id === user.id)) {
+        state.onlineUsers.push(user)
+      }
+    },
+
+    // 移除在线用户
+    removeOnlineUser(state, user) {
+      const userId = typeof user === 'object' ? user.id : user
+      state.onlineUsers = state.onlineUsers.filter(u => u.id !== userId)
+    },
+
+    // 标记消息为已读
+    markMessageAsRead(state, messageId) {
+      const message = state.messages.find(m => m.id === messageId)
+      if (message) {
+        message.read = true
+      }
+      if (!state.readMessages.includes(messageId)) {
+        state.readMessages.push(messageId)
+        if (state.unreadCount > 0) {
+          state.unreadCount--
+        }
+      }
     },
 
     // 设置语言
@@ -128,9 +162,11 @@ export default new Vuex.Store({
     isAuthenticated: state => !!state.user,
     currentUser: state => state.user,
     messagesByContact: state => contactId => {
-      return state.messages.filter(msg => 
+      return state.messages.filter(msg =>
         msg.sender_id === contactId || msg.receiver_id === contactId
       )
-    }
+    },
+    onlineUsers: state => state.onlineUsers,
+    isMessageRead: state => id => state.readMessages.includes(id)
   }
 })
