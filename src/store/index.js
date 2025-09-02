@@ -133,12 +133,11 @@ export default new Vuex.Store({
     },
 
     // 发送消息
-    async sendMessage({ commit, state }, messageData) {
+    async sendMessage({ state }, messageData) {
       try {
-          const response = await api.post('/sendMsg', messageData)
+        const response = await api.post('/sendMsg', messageData)
         if (response.status === 200) {
-          commit('addMessage', response.data)
-          return { success: true }
+          return { success: true, data: response.data }
         }
         return { success: false }
       } catch (error) {
