@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import api from '@/utils/http'
 
 Vue.use(Vuex)
 
@@ -78,7 +79,7 @@ export default new Vuex.Store({
     // 登录
     async login({ commit }, credentials) {
       try {
-        const response = await this.$api.post('/oauth/token', credentials)
+          const response = await api.post('/oauth/token', credentials)
         if (response.status === 200) {
           const user = response.data
           localStorage.setItem('authUser', JSON.stringify(user))
@@ -100,7 +101,7 @@ export default new Vuex.Store({
     // 发送消息
     async sendMessage({ commit, state }, messageData) {
       try {
-        const response = await this.$api.post('/sendMsg', messageData)
+          const response = await api.post('/sendMsg', messageData)
         if (response.status === 200) {
           commit('addMessage', response.data)
           return { success: true }
@@ -114,7 +115,7 @@ export default new Vuex.Store({
     // 获取消息列表
     async fetchMessages({ commit }) {
       try {
-        const response = await this.$api.get('/chat')
+          const response = await api.get('/chat')
         if (response.status === 200) {
           commit('setMessages', response.data)
         }
@@ -133,4 +134,4 @@ export default new Vuex.Store({
       )
     }
   }
-})
+  })
