@@ -72,7 +72,7 @@
         <van-col span="12">
           <van-field
             v-model="messageInput"
-            placeholder="输入消息..."
+            :placeholder="$t('message.inputPlaceholder')"
             @keyup.enter="send"
           />
         </van-col>
@@ -82,7 +82,7 @@
           <van-button
             class="message-send__btn"
             :loading="sendLoading"
-            text="发送"
+            :text="$t('message.send')"
             @click="send"
           />
         </van-col>
@@ -109,25 +109,29 @@ export default {
       sendLoading: false,
       showMoreActions: false,
       selectedLanguage: 'zh',
-      defaultAvatar: '/images/default-avatar.png',
-      languageOptions: [
-        { text: '中文', value: 'zh' },
-        { text: 'English', value: 'en' },
-        { text: 'Deutsch', value: 'de' },
-        { text: 'Français', value: 'fr' },
-        { text: '日本語', value: 'ja' },
-        { text: '한국어', value: 'ko' }
-      ],
-      moreActions: [
-        { name: '清空聊天记录', color: '#ee0a24' },
-        { name: '举报用户', color: '#ff976a' }
-      ]
+      defaultAvatar: '/images/default-avatar.png'
     }
   },
   computed: {
     ...mapState(['messages', 'currentChat', 'user']),
     chatTitle() {
-      return this.currentChat ? this.currentChat.name : '聊天'
+      return this.currentChat ? this.currentChat.name : this.$t('message.chat')
+    },
+    languageOptions() {
+      return [
+        { text: this.$t('language.zh'), value: 'zh' },
+        { text: this.$t('language.en'), value: 'en' },
+        { text: this.$t('language.de'), value: 'de' },
+        { text: this.$t('language.fr'), value: 'fr' },
+        { text: this.$t('language.ja'), value: 'ja' },
+        { text: this.$t('language.ko'), value: 'ko' }
+      ]
+    },
+    moreActions() {
+      return [
+        { name: this.$t('message.actionClear'), key: 'clear', color: '#ee0a24' },
+        { name: this.$t('message.actionReport'), key: 'report', color: '#ff976a' }
+      ]
     }
   },
   methods: {
@@ -136,7 +140,7 @@ export default {
 
     async send() {
       if (!this.messageInput.trim()) {
-        this.$toast('请输入消息内容')
+        this.$toast(this.$t('message.inputEmpty'))
         return
       }
 
@@ -165,11 +169,11 @@ export default {
           this.messageInput = ''
           this.scrollToBottom()
         } else {
-          this.$toast.fail('发送失败')
+          this.$toast.fail(this.$t('message.sendFail'))
         }
       } catch (error) {
-        console.error('发送消息错误:', error)
-        this.$toast.fail('发送失败，请稍后重试')
+        console.error('Send message error:', error)
+        this.$toast.fail(this.$t('message.sendFailRetry'))
       } finally {
         this.sendLoading = false
       }
@@ -199,8 +203,8 @@ export default {
           })
         }
       } catch (error) {
-        console.error('翻译失败:', error)
-        this.$toast.fail('翻译失败')
+        console.error('Translation failed:', error)
+        this.$toast.fail(this.$t('message.translateFail'))
         this.$set(this.messages, index, {
           ...message,
           translating: false
@@ -210,7 +214,7 @@ export default {
 
     onLanguageChange(value) {
       this.selectedLanguage = value
-      this.$toast(`已切换到${this.getLanguageName(value)}`)
+      this.$toast(this.$t('message.languageSwitched', { lang: this.getLanguageName(value) }))
     },
 
     getLanguageName(value) {
@@ -220,22 +224,22 @@ export default {
 
     setTranslate(language) {
       this.selectedLanguage = language
-      this.$toast(`已切换到${this.getLanguageName(language)}`)
+      this.$toast(this.$t('message.languageSwitched', { lang: this.getLanguageName(language) }))
     },
 
     onMoreActionSelect(action) {
       this.showMoreActions = false
-      
-      if (action.name === '清空聊天记录') {
+
+      if (action.key === 'clear') {
         this.$dialog.confirm({
-          title: '确认清空',
-          message: '确定要清空聊天记录吗？此操作不可恢复。'
+          title: this.$t('message.confirmClearTitle'),
+          message: this.$t('message.confirmClearMessage')
         }).then(() => {
           this.setMessages([])
-          this.$toast.success('聊天记录已清空')
+          this.$toast.success(this.$t('message.chatCleared'))
         }).catch(() => {})
-      } else if (action.name === '举报用户') {
-        this.$toast('举报功能开发中...')
+      } else if (action.key === 'report') {
+        this.$toast(this.$t('message.reportTip'))
       }
     },
 

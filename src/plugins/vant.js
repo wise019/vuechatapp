@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import i18n from '@/i18n'
 import {
   Button,
   NavBar,
@@ -60,6 +61,6 @@ Toast.setDefaultOptions({
 
 // 设置Dialog默认配置
 Dialog.setDefaultOptions({
-  confirmButtonText: '确定',
-  cancelButtonText: '取消'
+  confirmButtonText: i18n.t('common.confirm'),
+  cancelButtonText: i18n.t('common.cancel')
 })

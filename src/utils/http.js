@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import router from '@/router'
 import { Toast } from 'vant'
+import i18n from '@/i18n'
 
 // 创建axios实例
 const http = axios.create({
@@ -25,7 +26,7 @@ http.interceptors.request.use(
           config.headers.Authorization = `Bearer ${userData.access_token}`
         }
       } catch (error) {
-        console.error('解析用户数据失败:', error)
+        console.error('Failed to parse user data:', error)
         localStorage.removeItem('authUser')
       }
     }
@@ -39,7 +40,7 @@ http.interceptors.request.use(
     return config
   },
   error => {
-    console.error('请求配置错误:', error)
+    console.error('Request configuration error:', error)
     return Promise.reject(error)
   }
 )
@@ -52,10 +53,10 @@ http.interceptors.response.use(
   error => {
     // 处理网络错误
     if (!error.response) {
-      Toast.fail('网络连接失败，请检查网络设置')
+      Toast.fail(i18n.t('http.networkError'))
       return Promise.resolve({
         status: -1,
-        data: { error: '网络连接失败' }
+        data: { error: i18n.t('http.networkErrorShort') }
       })
     }
 
@@ -76,7 +77,7 @@ function checkStatus(response) {
   
   return {
     status: -404,
-    data: { error: '请求异常' }
+    data: { error: i18n.t('http.requestException') }
   }
 }
 
@@ -86,7 +87,7 @@ function checkCode(response) {
   
   // 请求异常
   if (res.status === -404) {
-    Toast.fail(res.data.error || '请求失败')
+    Toast.fail(res.data.error || i18n.t('http.requestFail'))
     return res
   }
   
@@ -94,13 +95,13 @@ function checkCode(response) {
   if (res.status === 401) {
     localStorage.removeItem('authUser')
     router.push('/login')
-    Toast.fail('登录已过期，请重新登录')
+    Toast.fail(i18n.t('http.loginExpired'))
     return res
   }
   
   // 表单验证错误
   if (res.status === 422 && res.data) {
-    let errorMessage = '数据验证失败'
+    let errorMessage = i18n.t('http.validationFailed')
     
     if (res.data.error) {
       errorMessage = res.data.error

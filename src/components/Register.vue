@@ -1,15 +1,15 @@
 <template>
   <div class="register">
     <!-- 导航栏 -->
-    <van-nav-bar title="注册" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar :title="$t('register.title')" left-arrow @click-left="$router.go(-1)" />
 
     <!-- 注册表单 -->
     <div class="register__form">
       <van-cell-group>
         <van-field
           v-model="forms.name"
-          label="用户名"
-          placeholder="请输入用户名"
+          :label="$t('register.usernameLabel')"
+          :placeholder="$t('register.usernamePlaceholder')"
           required
           clearable
           :error-message="errors.name"
@@ -17,8 +17,8 @@
         <van-field
           v-model="forms.email"
           type="email"
-          label="邮箱"
-          placeholder="请输入邮箱地址"
+          :label="$t('register.emailLabel')"
+          :placeholder="$t('register.emailPlaceholder')"
           required
           clearable
           :error-message="errors.email"
@@ -26,8 +26,8 @@
         <van-field
           v-model="forms.password"
           type="password"
-          label="密码"
-          placeholder="请输入密码（至少6位）"
+          :label="$t('register.passwordLabel')"
+          :placeholder="$t('register.passwordPlaceholder')"
           required
           clearable
           :error-message="errors.password"
@@ -35,8 +35,8 @@
         <van-field
           v-model="forms.password_confirmation"
           type="password"
-          label="确认密码"
-          placeholder="请再次输入密码"
+          :label="$t('register.confirmPasswordLabel')"
+          :placeholder="$t('register.confirmPasswordPlaceholder')"
           required
           clearable
           :error-message="errors.password_confirmation"
@@ -46,10 +46,10 @@
       <!-- 协议同意 -->
       <div class="register__agreement">
         <van-checkbox v-model="agreeTerms">
-          我已阅读并同意
-          <span class="link">《用户协议》</span>
-          和
-          <span class="link">《隐私政策》</span>
+          {{ $t('register.agree') }}
+          <span class="link">{{ $t('register.terms') }}</span>
+          {{ $t('register.and') }}
+          <span class="link">{{ $t('register.privacy') }}</span>
         </van-checkbox>
       </div>
 
@@ -62,13 +62,13 @@
           size="large"
           @click="submit"
         >
-          注册
+          {{ $t('register.submit') }}
         </van-button>
       </div>
 
       <!-- 登录链接 -->
       <div class="register__login--link">
-        <router-link to="/login">登录</router-link>
+        <router-link to="/login">{{ $t('register.loginLink') }}</router-link>
       </div>
     </div>
   </div>
@@ -118,7 +118,7 @@ export default {
         const response = await this.$api.post('/register', this.forms)
         
         if (response.status === 200) {
-          this.$toast.success('注册成功')
+          this.$toast.success(this.$t('register.success'))
           // 自动登录
           const loginResult = await OAuth.request(this.forms.email, this.forms.password)
           if (loginResult) {
@@ -130,11 +130,11 @@ export default {
           // 处理验证错误
           this.handleValidationErrors(response.data)
         } else {
-          this.$toast.fail('注册失败，请稍后重试')
+          this.$toast.fail(this.$t('register.fail'))
         }
       } catch (error) {
-        console.error('注册错误:', error)
-        this.$toast.fail('注册失败，请稍后重试')
+        console.error('Registration error:', error)
+        this.$toast.fail(this.$t('register.fail'))
       } finally {
         this.loadingRegister = false
       }
@@ -145,40 +145,40 @@ export default {
 
       // 用户名验证
       if (!this.forms.name) {
-        this.errors.name = '请输入用户名'
+        this.errors.name = this.$t('register.error.usernameRequired')
         isValid = false
       } else if (this.forms.name.length < 2) {
-        this.errors.name = '用户名至少2个字符'
+        this.errors.name = this.$t('register.error.usernameMin')
         isValid = false
       }
 
       // 邮箱验证
       if (!this.forms.email) {
-        this.errors.email = '请输入邮箱地址'
+        this.errors.email = this.$t('register.error.emailRequired')
         isValid = false
       } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(this.forms.email)) {
-          this.errors.email = '请输入有效的邮箱地址'
+          this.errors.email = this.$t('register.error.emailInvalid')
           isValid = false
         }
       }
 
       // 密码验证
       if (!this.forms.password) {
-        this.errors.password = '请输入密码'
+        this.errors.password = this.$t('register.error.passwordRequired')
         isValid = false
       } else if (this.forms.password.length < 6) {
-        this.errors.password = '密码至少6个字符'
+        this.errors.password = this.$t('register.error.passwordMin')
         isValid = false
       }
 
       // 确认密码验证
       if (!this.forms.password_confirmation) {
-        this.errors.password_confirmation = '请确认密码'
+        this.errors.password_confirmation = this.$t('register.error.passwordConfirmRequired')
         isValid = false
       } else if (this.forms.password !== this.forms.password_confirmation) {
-        this.errors.password_confirmation = '两次输入的密码不一致'
+        this.errors.password_confirmation = this.$t('register.error.passwordMismatch')
         isValid = false
       }
 

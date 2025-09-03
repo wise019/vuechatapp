@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <!-- 导航栏 -->
-    <van-nav-bar title="登录" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar :title="$t('login.title')" left-arrow @click-left="$router.go(-1)" />
 
     <!-- 登录表单 -->
     <div class="login__form">
@@ -9,8 +9,8 @@
         <van-field
           v-model="forms.email"
           type="email"
-          label="邮箱"
-          placeholder="请输入邮箱地址"
+          :label="$t('login.emailLabel')"
+          :placeholder="$t('login.emailPlaceholder')"
           required
           clearable
           :error-message="errors.email"
@@ -18,8 +18,8 @@
         <van-field
           v-model="forms.password"
           type="password"
-          label="密码"
-          placeholder="请输入密码"
+          :label="$t('login.passwordLabel')"
+          :placeholder="$t('login.passwordPlaceholder')"
           required
           clearable
           :error-message="errors.password"
@@ -35,19 +35,19 @@
           size="large"
           @click="submit"
         >
-          登录
+          {{ $t('login.submit') }}
         </van-button>
       </div>
 
       <!-- 注册链接 -->
       <div class="login__register--link">
-        <router-link to="/register">注册</router-link>
+        <router-link to="/register">{{ $t('login.registerLink') }}</router-link>
       </div>
 
       <!-- 忘记密码 -->
       <div class="login__forgot">
         <van-button type="default" plain size="small">
-          忘记密码？
+          {{ $t('login.forgot') }}
         </van-button>
       </div>
     </div>
@@ -83,19 +83,19 @@ export default {
       
       // 简单验证
       if (!this.forms.email) {
-        this.errors.email = '请输入邮箱地址'
+        this.errors.email = this.$t('login.emailRequired')
         return
       }
-      
+
       if (!this.forms.password) {
-        this.errors.password = '请输入密码'
+        this.errors.password = this.$t('login.passwordRequired')
         return
       }
 
       // 邮箱格式验证
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(this.forms.email)) {
-        this.errors.email = '请输入有效的邮箱地址'
+        this.errors.email = this.$t('login.emailInvalid')
         return
       }
 
@@ -108,15 +108,15 @@ export default {
         })
 
         if (result && result.success) {
-          this.$toast.success('登录成功')
+          this.$toast.success(this.$t('login.success'))
           this.$router.push('/home')
         } else {
-          const message = result && result.message ? result.message : '登录失败，请检查邮箱和密码'
+          const message = result && result.message ? result.message : this.$t('login.failCheck')
           this.$toast.fail(message)
         }
       } catch (error) {
-        console.error('登录错误:', error)
-        this.$toast.fail('登录失败，请稍后重试')
+        console.error('Login error:', error)
+        this.$toast.fail(this.$t('login.failRetry'))
       } finally {
         this.loadingLogin = false
       }

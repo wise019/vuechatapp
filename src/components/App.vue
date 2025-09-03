@@ -12,9 +12,9 @@
       active-color="#07c160"
       inactive-color="#000"
     >
-      <van-tabbar-item icon="wap-home-o" to="/home">首页</van-tabbar-item>
-      <van-tabbar-item icon="chat-o" to="/message">消息</van-tabbar-item>
-      <van-tabbar-item icon="friends-o" to="/my">我的</van-tabbar-item>
+      <van-tabbar-item icon="wap-home-o" to="/home">{{ $t('tab.home') }}</van-tabbar-item>
+      <van-tabbar-item icon="chat-o" to="/message">{{ $t('tab.message') }}</van-tabbar-item>
+      <van-tabbar-item icon="friends-o" to="/my">{{ $t('tab.my') }}</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
