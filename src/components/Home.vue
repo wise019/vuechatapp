@@ -18,7 +18,7 @@
           readonly
           @click="showLanguagePicker = true"
         />
-        
+
         <!-- 搜索框 -->
         <van-field
           v-model="searchTitle"
@@ -30,11 +30,7 @@
 
       <!-- 搜索按钮 -->
       <div class="search__btn">
-        <van-button 
-          type="primary" 
-          size="large"
-          @click="handleSearch"
-        >
+        <van-button type="primary" size="large" @click="handleSearch">
           {{ $t('home.searchButton') }}
         </van-button>
       </div>
@@ -42,13 +38,13 @@
       <!-- 快捷操作 -->
       <div class="home__actions">
         <van-grid :column-num="2" :gutter="10">
-          <van-grid-item 
-            icon="chat-o" 
+          <van-grid-item
+            icon="chat-o"
             :text="$t('my.startChat')"
             @click="$router.push('/message')"
           />
-          <van-grid-item 
-            icon="friends-o" 
+          <van-grid-item
+            icon="friends-o"
             :text="$t('home.myFriends')"
             @click="$router.push('/my')"
           />
@@ -57,11 +53,7 @@
     </div>
 
     <!-- 语言选择弹窗 -->
-    <van-popup 
-      v-model="showLanguagePicker" 
-      position="bottom"
-      round
-    >
+    <van-popup v-model="showLanguagePicker" position="bottom" round>
       <van-picker
         :columns="languageColumns"
         @confirm="onLanguageConfirm"
@@ -79,7 +71,7 @@ export default {
   data() {
     return {
       searchTitle: '',
-      showLanguagePicker: false
+      showLanguagePicker: false,
     }
   },
   computed: {
@@ -91,13 +83,15 @@ export default {
         { text: this.$t('language.de'), value: 'de' },
         { text: this.$t('language.fr'), value: 'fr' },
         { text: this.$t('language.ja'), value: 'ja' },
-        { text: this.$t('language.ko'), value: 'ko' }
+        { text: this.$t('language.ko'), value: 'ko' },
       ]
     },
     selectedLanguage() {
-      const lang = this.languageColumns.find(item => item.value === this.language)
+      const lang = this.languageColumns.find(
+        (item) => item.value === this.language
+      )
       return lang ? lang.text : this.$t('language.zh')
-    }
+    },
   },
   methods: {
     ...mapMutations(['setLanguage']),
@@ -114,8 +108,10 @@ export default {
     onLanguageConfirm(value) {
       this.setLanguage(value)
       this.showLanguagePicker = false
-      this.$toast(this.$t('home.languageSwitched', { lang: this.selectedLanguage }))
-    }
+      this.$toast(
+        this.$t('home.languageSwitched', { lang: this.selectedLanguage })
+      )
+    },
   },
   mounted() {
     // 从本地存储恢复语言设置
@@ -123,7 +119,7 @@ export default {
     if (savedLanguage) {
       this.setLanguage(savedLanguage)
     }
-  }
+  },
 }
 </script>
 
@@ -144,7 +140,7 @@ export default {
 
 .home__actions {
   margin-top: 32px;
-  
+
   .van-grid-item {
     background: white;
     border-radius: 8px;

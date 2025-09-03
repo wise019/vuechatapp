@@ -5,8 +5,9 @@
   "scripts": {
     "serve": "webpack serve --config webpack.config.js --mode development",
     "build": "webpack --config webpack.config.js --mode production",
-    "lint": "eslint \"src/**/*.{js,vue}\"",
-    "lint:fix": "npm run lint -- --fix"
+    "lint": "eslint -c .eslintrc.js \"src/**/*.{js,vue}\"",
+    "lint:fix": "npm run lint -- --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@babel/runtime": "^7.22.10",
@@ -40,6 +41,15 @@
     "webpack-dev-server": "^4.15.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.15.1",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "eslint --fix"
+    ]
   }
 }

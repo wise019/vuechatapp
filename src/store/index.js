@@ -16,7 +16,7 @@ export default new Vuex.Store({
     language: localStorage.getItem('app_language') || 'zh', // 当前语言
     theme: 'light', // 主题模式
     onlineUsers: [], // 当前在线用户
-    readMessages: [] // 已读消息ID
+    readMessages: [], // 已读消息ID
   },
 
   mutations: {
@@ -62,7 +62,7 @@ export default new Vuex.Store({
 
     // 添加在线用户
     addOnlineUser(state, user) {
-      if (!state.onlineUsers.some(u => u.id === user.id)) {
+      if (!state.onlineUsers.some((u) => u.id === user.id)) {
         state.onlineUsers.push(user)
       }
     },
@@ -70,12 +70,12 @@ export default new Vuex.Store({
     // 移除在线用户
     removeOnlineUser(state, user) {
       const userId = typeof user === 'object' ? user.id : user
-      state.onlineUsers = state.onlineUsers.filter(u => u.id !== userId)
+      state.onlineUsers = state.onlineUsers.filter((u) => u.id !== userId)
     },
 
     // 标记消息为已读
     markMessageAsRead(state, messageId) {
-      const message = state.messages.find(m => m.id === messageId)
+      const message = state.messages.find((m) => m.id === messageId)
       if (message) {
         message.read = true
       }
@@ -108,14 +108,14 @@ export default new Vuex.Store({
       state.contacts = []
       state.currentChat = null
       state.unreadCount = 0
-    }
+    },
   },
 
   actions: {
     // 登录
     async login({ commit }, credentials) {
       try {
-          const response = await api.post('/oauth/token', credentials)
+        const response = await api.post('/oauth/token', credentials)
         if (response.status === 200) {
           const user = response.data
           localStorage.setItem('authUser', JSON.stringify(user))
@@ -150,25 +150,25 @@ export default new Vuex.Store({
     // 获取消息列表
     async fetchMessages({ commit }) {
       try {
-          const response = await api.get('/chat')
+        const response = await api.get('/chat')
         if (response.status === 200) {
           commit('setMessages', response.data)
         }
       } catch (error) {
         console.error('获取消息失败:', error)
       }
-    }
+    },
   },
 
   getters: {
-    isAuthenticated: state => !!state.user,
-    currentUser: state => state.user,
-    messagesByContact: state => contactId => {
-      return state.messages.filter(msg =>
-        msg.sender_id === contactId || msg.receiver_id === contactId
+    isAuthenticated: (state) => !!state.user,
+    currentUser: (state) => state.user,
+    messagesByContact: (state) => (contactId) => {
+      return state.messages.filter(
+        (msg) => msg.sender_id === contactId || msg.receiver_id === contactId
       )
     },
-    onlineUsers: state => state.onlineUsers,
-    isMessageRead: state => id => state.readMessages.includes(id)
-  }
-  })
+    onlineUsers: (state) => state.onlineUsers,
+    isMessageRead: (state) => (id) => state.readMessages.includes(id),
+  },
+})

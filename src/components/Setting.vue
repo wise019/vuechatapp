@@ -28,14 +28,14 @@
             />
           </template>
         </van-cell>
-        
+
         <van-cell
           :title="$t('settings.nickname')"
           :value="userInfo.name"
           is-link
           @click="editNickname"
         />
-        
+
         <van-cell
           :title="$t('settings.email')"
           :value="userInfo.email"
@@ -46,13 +46,21 @@
 
       <!-- 应用设置 -->
       <van-cell-group :title="$t('settings.appSettingsSection')">
-        <van-cell :title="$t('settings.language')" is-link @click="showLanguageSelector = true">
+        <van-cell
+          :title="$t('settings.language')"
+          is-link
+          @click="showLanguageSelector = true"
+        >
           <template #value>
             <span class="setting__value">{{ currentLanguageName }}</span>
           </template>
         </van-cell>
 
-        <van-cell :title="$t('settings.theme')" is-link @click="showThemeSelector = true">
+        <van-cell
+          :title="$t('settings.theme')"
+          is-link
+          @click="showThemeSelector = true"
+        >
           <template #value>
             <span class="setting__value">{{ currentThemeName }}</span>
           </template>
@@ -81,30 +89,30 @@
 
       <!-- 其他设置 -->
       <van-cell-group :title="$t('settings.otherSection')">
-        <van-cell :title="$t('settings.clearCache')" is-link @click="clearCache" />
+        <van-cell
+          :title="$t('settings.clearCache')"
+          is-link
+          @click="clearCache"
+        />
         <van-cell :title="$t('settings.about')" is-link @click="showAbout" />
         <van-cell :title="$t('settings.terms')" is-link @click="showTerms" />
-        <van-cell :title="$t('settings.privacy')" is-link @click="showPrivacy" />
+        <van-cell
+          :title="$t('settings.privacy')"
+          is-link
+          @click="showPrivacy"
+        />
       </van-cell-group>
 
       <!-- 退出登录 -->
       <div class="setting__logout">
-        <van-button
-          type="danger"
-          size="large"
-          @click="handleLogout"
-        >
+        <van-button type="danger" size="large" @click="handleLogout">
           {{ $t('settings.logout') }}
         </van-button>
       </div>
     </div>
 
     <!-- 语言选择弹窗 -->
-    <van-popup 
-      v-model="showLanguageSelector" 
-      position="bottom"
-      round
-    >
+    <van-popup v-model="showLanguageSelector" position="bottom" round>
       <van-picker
         :columns="languageColumns"
         @confirm="onLanguageConfirm"
@@ -113,11 +121,7 @@
     </van-popup>
 
     <!-- 主题选择弹窗 -->
-    <van-popup 
-      v-model="showThemeSelector" 
-      position="bottom"
-      round
-    >
+    <van-popup v-model="showThemeSelector" position="bottom" round>
       <van-picker
         :columns="themeColumns"
         @confirm="onThemeConfirm"
@@ -138,17 +142,19 @@ export default {
       showLanguageSelector: false,
       showThemeSelector: false,
       notificationEnabled: true,
-      soundEnabled: true
+      soundEnabled: true,
     }
   },
   computed: {
     ...mapState(['user', 'language', 'theme']),
     userInfo() {
-      return this.user || {
-        name: this.$t('settings.notLoggedIn'),
-        email: '',
-        avatar: ''
-      }
+      return (
+        this.user || {
+          name: this.$t('settings.notLoggedIn'),
+          email: '',
+          avatar: '',
+        }
+      )
     },
     languageColumns() {
       return [
@@ -157,24 +163,26 @@ export default {
         { text: this.$t('language.de'), value: 'de' },
         { text: this.$t('language.fr'), value: 'fr' },
         { text: this.$t('language.ja'), value: 'ja' },
-        { text: this.$t('language.ko'), value: 'ko' }
+        { text: this.$t('language.ko'), value: 'ko' },
       ]
     },
     themeColumns() {
       return [
         { text: this.$t('settings.themeLight'), value: 'light' },
         { text: this.$t('settings.themeDark'), value: 'dark' },
-        { text: this.$t('settings.themeAuto'), value: 'auto' }
+        { text: this.$t('settings.themeAuto'), value: 'auto' },
       ]
     },
     currentLanguageName() {
-      const lang = this.languageColumns.find(item => item.value === this.language)
+      const lang = this.languageColumns.find(
+        (item) => item.value === this.language
+      )
       return lang ? lang.text : this.$t('language.zh')
     },
     currentThemeName() {
-      const theme = this.themeColumns.find(item => item.value === this.theme)
+      const theme = this.themeColumns.find((item) => item.value === this.theme)
       return theme ? theme.text : this.$t('settings.themeLight')
-    }
+    },
   },
   methods: {
     ...mapMutations(['setLanguage', 'setTheme']),
@@ -185,15 +193,18 @@ export default {
     },
 
     editNickname() {
-      this.$dialog.prompt({
-        title: this.$t('settings.editNickname'),
-        message: this.$t('settings.enterNewNickname')
-      }).then(value => {
-        if (value) {
-          // 更新昵称逻辑
-          this.$toast.success(this.$t('settings.nicknameUpdated'))
-        }
-      }).catch(() => {})
+      this.$dialog
+        .prompt({
+          title: this.$t('settings.editNickname'),
+          message: this.$t('settings.enterNewNickname'),
+        })
+        .then((value) => {
+          if (value) {
+            // 更新昵称逻辑
+            this.$toast.success(this.$t('settings.nicknameUpdated'))
+          }
+        })
+        .catch(() => {})
     },
 
     editEmail() {
@@ -203,42 +214,57 @@ export default {
     onLanguageConfirm(value) {
       this.setLanguage(value)
       this.showLanguageSelector = false
-      this.$toast.success(this.$t('settings.switchLanguageSuccess', { lang: this.currentLanguageName }))
+      this.$toast.success(
+        this.$t('settings.switchLanguageSuccess', {
+          lang: this.currentLanguageName,
+        })
+      )
     },
 
     onThemeConfirm(value) {
       this.setTheme(value)
       this.showThemeSelector = false
-      this.$toast.success(this.$t('settings.switchThemeSuccess', { theme: this.currentThemeName }))
+      this.$toast.success(
+        this.$t('settings.switchThemeSuccess', { theme: this.currentThemeName })
+      )
     },
 
     toggleNotification(enabled) {
       this.notificationEnabled = enabled
       localStorage.setItem('notification_enabled', enabled)
-      this.$toast.success(this.$t(enabled ? 'settings.notificationOn' : 'settings.notificationOff'))
+      this.$toast.success(
+        this.$t(
+          enabled ? 'settings.notificationOn' : 'settings.notificationOff'
+        )
+      )
     },
 
     toggleSound(enabled) {
       this.soundEnabled = enabled
       localStorage.setItem('sound_enabled', enabled)
-      this.$toast.success(this.$t(enabled ? 'settings.soundOn' : 'settings.soundOff'))
+      this.$toast.success(
+        this.$t(enabled ? 'settings.soundOn' : 'settings.soundOff')
+      )
     },
 
     clearCache() {
-      this.$dialog.confirm({
-        title: this.$t('settings.clearCache'),
-        message: this.$t('settings.clearCacheConfirm')
-      }).then(() => {
-        // 清除缓存逻辑
-        localStorage.removeItem('app_cache')
-        this.$toast.success(this.$t('settings.clearCacheSuccess'))
-      }).catch(() => {})
+      this.$dialog
+        .confirm({
+          title: this.$t('settings.clearCache'),
+          message: this.$t('settings.clearCacheConfirm'),
+        })
+        .then(() => {
+          // 清除缓存逻辑
+          localStorage.removeItem('app_cache')
+          this.$toast.success(this.$t('settings.clearCacheSuccess'))
+        })
+        .catch(() => {})
     },
 
     showAbout() {
       this.$dialog.alert({
         title: this.$t('settings.about'),
-        message: this.$t('settings.aboutMessage')
+        message: this.$t('settings.aboutMessage'),
       })
     },
 
@@ -251,15 +277,18 @@ export default {
     },
 
     async handleLogout() {
-      this.$dialog.confirm({
-        title: this.$t('settings.logout'),
-        message: this.$t('settings.logoutConfirm')
-      }).then(() => {
-        this.logout()
-        this.$toast.success(this.$t('settings.logoutSuccess'))
-        this.$router.push('/login')
-      }).catch(() => {})
-    }
+      this.$dialog
+        .confirm({
+          title: this.$t('settings.logout'),
+          message: this.$t('settings.logoutConfirm'),
+        })
+        .then(() => {
+          this.logout()
+          this.$toast.success(this.$t('settings.logoutSuccess'))
+          this.$router.push('/login')
+        })
+        .catch(() => {})
+    },
   },
 
   mounted() {
@@ -273,7 +302,7 @@ export default {
     if (soundEnabled !== null) {
       this.soundEnabled = soundEnabled === 'true'
     }
-  }
+  },
 }
 </script>
 
@@ -306,7 +335,7 @@ export default {
   .setting {
     background-color: #1c1c1e;
   }
-  
+
   .setting__value {
     color: #8e8e93;
   }

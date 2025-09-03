@@ -18,13 +18,14 @@
           height="60px"
         />
         <div class="user-card__info">
-          <div class="user-card__name">{{ userInfo.name || $t('my.noNickname') }}</div>
-          <div class="user-card__email">{{ userInfo.email || $t('my.noEmail') }}</div>
+          <div class="user-card__name">
+            {{ userInfo.name || $t('my.noNickname') }}
+          </div>
+          <div class="user-card__email">
+            {{ userInfo.email || $t('my.noEmail') }}
+          </div>
           <div class="user-card__status">
-            <van-tag 
-              :type="isOnline ? 'success' : 'default'"
-              size="mini"
-            >
+            <van-tag :type="isOnline ? 'success' : 'default'" size="mini">
               {{ isOnline ? $t('my.online') : $t('my.offline') }}
             </van-tag>
           </div>
@@ -98,31 +99,23 @@
           is-link
           @click="contactSupport"
         />
-        <van-cell
-          :title="$t('my.version')"
-          :value="appVersion"
-          icon="info-o"
-        />
+        <van-cell :title="$t('my.version')" :value="appVersion" icon="info-o" />
       </van-cell-group>
 
       <!-- 快捷操作 -->
       <div class="my__actions">
         <van-row gutter="12">
           <van-col span="12">
-            <van-button 
-              type="primary" 
-              size="large" 
+            <van-button
+              type="primary"
+              size="large"
               @click="$router.push('/message')"
             >
               {{ $t('my.startChat') }}
             </van-button>
           </van-col>
           <van-col span="12">
-            <van-button 
-              type="default" 
-              size="large"
-              @click="shareApp"
-            >
+            <van-button type="default" size="large" @click="shareApp">
               {{ $t('my.shareApp') }}
             </van-button>
           </van-col>
@@ -143,18 +136,20 @@ export default {
       isOnline: true,
       todayMessages: 12,
       friendCount: 5,
-      appVersion: 'v1.0.0'
+      appVersion: 'v1.0.0',
     }
   },
   computed: {
     ...mapState(['user', 'unreadCount']),
     userInfo() {
-      return this.user || {
-        name: '',
-        email: '',
-        avatar: ''
-      }
-    }
+      return (
+        this.user || {
+          name: '',
+          email: '',
+          avatar: '',
+        }
+      )
+    },
   },
   methods: {
     showTranslateHistory() {
@@ -162,16 +157,19 @@ export default {
     },
 
     showBackup() {
-      this.$dialog.confirm({
-        title: this.$t('my.backupTitle'),
-        message: this.$t('my.backupMessage')
-      }).then(() => {
-        this.$toast.loading(this.$t('my.backupLoading'))
-        setTimeout(() => {
-          this.$toast.clear()
-          this.$toast.success(this.$t('my.backupSuccess'))
-        }, 2000)
-      }).catch(() => {})
+      this.$dialog
+        .confirm({
+          title: this.$t('my.backupTitle'),
+          message: this.$t('my.backupMessage'),
+        })
+        .then(() => {
+          this.$toast.loading(this.$t('my.backupLoading'))
+          setTimeout(() => {
+            this.$toast.clear()
+            this.$toast.success(this.$t('my.backupSuccess'))
+          }, 2000)
+        })
+        .catch(() => {})
     },
 
     showBlockList() {
@@ -179,27 +177,30 @@ export default {
     },
 
     showFeedback() {
-      this.$dialog.prompt({
-        title: this.$t('my.feedbackTitle'),
-        message: this.$t('my.feedbackMessage')
-      }).then(value => {
-        if (value) {
-          this.$toast.success(this.$t('my.feedbackSuccess'))
-        }
-      }).catch(() => {})
+      this.$dialog
+        .prompt({
+          title: this.$t('my.feedbackTitle'),
+          message: this.$t('my.feedbackMessage'),
+        })
+        .then((value) => {
+          if (value) {
+            this.$toast.success(this.$t('my.feedbackSuccess'))
+          }
+        })
+        .catch(() => {})
     },
 
     showHelp() {
       this.$dialog.alert({
         title: this.$t('my.helpTitle'),
-        message: this.$t('my.helpMessage')
+        message: this.$t('my.helpMessage'),
       })
     },
 
     contactSupport() {
       this.$dialog.alert({
         title: this.$t('my.contactTitle'),
-        message: this.$t('my.contactMessage')
+        message: this.$t('my.contactMessage'),
       })
     },
 
@@ -208,7 +209,7 @@ export default {
         navigator.share({
           title: this.$t('my.shareTitle'),
           text: this.$t('my.shareText'),
-          url: window.location.origin
+          url: window.location.origin,
         })
       } else {
         // 复制链接到剪贴板
@@ -242,7 +243,7 @@ export default {
       } catch (error) {
         console.error('Failed to fetch stats:', error)
       }
-    }
+    },
   },
 
   mounted() {
@@ -253,7 +254,7 @@ export default {
 
     // 模拟获取消息统计数据
     this.fetchStats()
-  }
+  },
 }
 </script>
 
@@ -267,7 +268,7 @@ export default {
 .my__header {
   padding: 20px 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  
+
   .user-card {
     display: flex;
     align-items: center;
@@ -278,40 +279,40 @@ export default {
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       background: rgba(255, 255, 255, 0.15);
     }
   }
-  
+
   .user-card__avatar {
     margin-right: 16px;
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
-  
+
   .user-card__info {
     flex: 1;
   }
-  
+
   .user-card__name {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 4px;
   }
-  
+
   .user-card__email {
     font-size: 14px;
     opacity: 0.8;
     margin-bottom: 8px;
   }
-  
+
   .user-card__status {
     .van-tag {
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
   }
-  
+
   .user-card__arrow {
     color: rgba(255, 255, 255, 0.6);
     font-size: 16px;
@@ -331,7 +332,7 @@ export default {
   .my {
     background-color: #1c1c1e;
   }
-  
+
   .my__header {
     background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
   }
@@ -342,15 +343,15 @@ export default {
   .my__header {
     padding: 16px 12px;
   }
-  
+
   .user-card {
     padding: 12px !important;
   }
-  
+
   .user-card__name {
     font-size: 16px !important;
   }
-  
+
   .my__actions {
     margin: 20px 12px 12px;
   }

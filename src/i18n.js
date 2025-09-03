@@ -9,7 +9,7 @@ const locale = localStorage.getItem('app_language') || 'zh'
 
 const i18n = new VueI18n({
   locale,
-  messages: { zh, en }
+  messages: { zh, en },
 })
 
 export default i18n

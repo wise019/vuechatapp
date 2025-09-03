@@ -1,7 +1,11 @@
 <template>
   <div class="register">
     <!-- 导航栏 -->
-    <van-nav-bar :title="$t('register.title')" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      :title="$t('register.title')"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
     <!-- 注册表单 -->
     <div class="register__form">
@@ -85,28 +89,30 @@ export default {
         name: '',
         email: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
       },
       errors: {},
       loadingRegister: false,
-      agreeTerms: false
+      agreeTerms: false,
     }
   },
   computed: {
     disableRegister() {
-      return !this.forms.name || 
-             !this.forms.email || 
-             !this.forms.password || 
-             !this.forms.password_confirmation ||
-             !this.agreeTerms ||
-             this.loadingRegister
-    }
+      return (
+        !this.forms.name ||
+        !this.forms.email ||
+        !this.forms.password ||
+        !this.forms.password_confirmation ||
+        !this.agreeTerms ||
+        this.loadingRegister
+      )
+    },
   },
   methods: {
     async submit() {
       // 清除之前的错误
       this.errors = {}
-      
+
       // 表单验证
       if (!this.validateForm()) {
         return
@@ -116,11 +122,14 @@ export default {
 
       try {
         const response = await this.$api.post('/register', this.forms)
-        
+
         if (response.status === 200) {
           this.$toast.success(this.$t('register.success'))
           // 自动登录
-          const loginResult = await OAuth.request(this.forms.email, this.forms.password)
+          const loginResult = await OAuth.request(
+            this.forms.email,
+            this.forms.password
+          )
           if (loginResult) {
             this.$router.push('/home')
           } else {
@@ -175,10 +184,14 @@ export default {
 
       // 确认密码验证
       if (!this.forms.password_confirmation) {
-        this.errors.password_confirmation = this.$t('register.error.passwordConfirmRequired')
+        this.errors.password_confirmation = this.$t(
+          'register.error.passwordConfirmRequired'
+        )
         isValid = false
       } else if (this.forms.password !== this.forms.password_confirmation) {
-        this.errors.password_confirmation = this.$t('register.error.passwordMismatch')
+        this.errors.password_confirmation = this.$t(
+          'register.error.passwordMismatch'
+        )
         isValid = false
       }
 
@@ -188,14 +201,14 @@ export default {
     handleValidationErrors(errorData) {
       if (errorData.errors) {
         this.errors = {}
-        Object.keys(errorData.errors).forEach(key => {
+        Object.keys(errorData.errors).forEach((key) => {
           this.errors[key] = errorData.errors[key][0]
         })
       } else if (errorData.error) {
         this.$toast.fail(errorData.error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -212,11 +225,11 @@ export default {
 .register__agreement {
   margin: 16px 0;
   padding: 0 16px;
-  
+
   .link {
     color: #1989fa;
     text-decoration: none;
-    
+
     &:hover {
       text-decoration: underline;
     }
@@ -230,12 +243,12 @@ export default {
 .register__login--link {
   text-align: center;
   margin-top: 16px;
-  
+
   a {
     color: #1989fa;
     text-decoration: none;
     font-size: 14px;
-    
+
     &:hover {
       text-decoration: underline;
     }

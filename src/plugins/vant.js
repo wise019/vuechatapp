@@ -24,7 +24,7 @@ import {
   Grid,
   GridItem,
   Checkbox,
-  ActionSheet
+  ActionSheet,
 } from 'vant'
 
 // 注册组件
@@ -56,11 +56,11 @@ Vue.use(ActionSheet)
 // 设置Toast默认配置
 Toast.setDefaultOptions({
   duration: 2000,
-  position: 'middle'
+  position: 'middle',
 })
 
 // 设置Dialog默认配置
 Dialog.setDefaultOptions({
   confirmButtonText: i18n.t('common.confirm'),
-  cancelButtonText: i18n.t('common.cancel')
+  cancelButtonText: i18n.t('common.cancel'),
 })
