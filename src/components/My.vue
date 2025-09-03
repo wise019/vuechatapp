@@ -1,7 +1,7 @@
 <template>
   <div class="my">
     <!-- 导航栏 -->
-    <van-nav-bar title="我的" fixed>
+    <van-nav-bar :title="$t('my.title')" fixed>
       <template #right>
         <van-icon name="setting-o" @click="$router.push('/setting')" />
       </template>
@@ -18,14 +18,14 @@
           height="60px"
         />
         <div class="user-card__info">
-          <div class="user-card__name">{{ userInfo.name || '未设置昵称' }}</div>
-          <div class="user-card__email">{{ userInfo.email || '未设置邮箱' }}</div>
+          <div class="user-card__name">{{ userInfo.name || $t('my.noNickname') }}</div>
+          <div class="user-card__email">{{ userInfo.email || $t('my.noEmail') }}</div>
           <div class="user-card__status">
             <van-tag 
               :type="isOnline ? 'success' : 'default'"
               size="mini"
             >
-              {{ isOnline ? '在线' : '离线' }}
+              {{ isOnline ? $t('my.online') : $t('my.offline') }}
             </van-tag>
           </div>
         </div>
@@ -36,48 +36,48 @@
     <!-- 功能菜单 -->
     <div class="my__content">
       <!-- 消息统计 -->
-      <van-cell-group title="消息统计">
-        <van-cell 
-          title="未读消息" 
-          :value="unreadCount + '条'"
+      <van-cell-group :title="$t('my.statsSection')">
+        <van-cell
+          :title="$t('my.unread')"
+          :value="unreadCount + $t('my.items')"
           icon="chat-o"
           is-link
           @click="$router.push('/message')"
         />
-        <van-cell 
-          title="今日发送" 
-          :value="todayMessages + '条'"
+        <van-cell
+          :title="$t('my.today')"
+          :value="todayMessages + $t('my.items')"
           icon="edit"
         />
-        <van-cell 
-          title="好友数量" 
-          :value="friendCount + '人'"
+        <van-cell
+          :title="$t('my.friends')"
+          :value="friendCount + $t('my.people')"
           icon="friends-o"
         />
       </van-cell-group>
 
       <!-- 功能入口 -->
-      <van-cell-group title="功能">
-        <van-cell 
-          title="翻译历史" 
+      <van-cell-group :title="$t('my.featuresSection')">
+        <van-cell
+          :title="$t('my.history')"
           icon="language-o"
           is-link
           @click="showTranslateHistory"
         />
-        <van-cell 
-          title="消息备份" 
+        <van-cell
+          :title="$t('my.backup')"
           icon="records"
           is-link
           @click="showBackup"
         />
-        <van-cell 
-          title="黑名单管理" 
+        <van-cell
+          :title="$t('my.blocklist')"
           icon="contact"
           is-link
           @click="showBlockList"
         />
-        <van-cell 
-          title="反馈建议" 
+        <van-cell
+          :title="$t('my.feedback')"
           icon="comment-o"
           is-link
           @click="showFeedback"
@@ -85,21 +85,21 @@
       </van-cell-group>
 
       <!-- 帮助与支持 -->
-      <van-cell-group title="帮助与支持">
-        <van-cell 
-          title="使用帮助" 
+      <van-cell-group :title="$t('my.supportSection')">
+        <van-cell
+          :title="$t('my.help')"
           icon="question-o"
           is-link
           @click="showHelp"
         />
-        <van-cell 
-          title="联系客服" 
+        <van-cell
+          :title="$t('my.contact')"
           icon="service-o"
           is-link
           @click="contactSupport"
         />
-        <van-cell 
-          title="版本信息" 
+        <van-cell
+          :title="$t('my.version')"
           :value="appVersion"
           icon="info-o"
         />
@@ -114,7 +114,7 @@
               size="large" 
               @click="$router.push('/message')"
             >
-              开始聊天
+              {{ $t('my.startChat') }}
             </van-button>
           </van-col>
           <van-col span="12">
@@ -123,7 +123,7 @@
               size="large"
               @click="shareApp"
             >
-              分享应用
+              {{ $t('my.shareApp') }}
             </van-button>
           </van-col>
         </van-row>
@@ -158,62 +158,56 @@ export default {
   },
   methods: {
     showTranslateHistory() {
-      this.$toast('翻译历史功能开发中...')
+      this.$toast(this.$t('my.historyTip'))
     },
 
     showBackup() {
       this.$dialog.confirm({
-        title: '消息备份',
-        message: '是否要备份聊天记录到云端？'
+        title: this.$t('my.backupTitle'),
+        message: this.$t('my.backupMessage')
       }).then(() => {
-        this.$toast.loading('正在备份...')
-        
+        this.$toast.loading(this.$t('my.backupLoading'))
         setTimeout(() => {
-          this.$toast.success('备份完成')
+          this.$toast.clear()
+          this.$toast.success(this.$t('my.backupSuccess'))
         }, 2000)
       }).catch(() => {})
     },
 
     showBlockList() {
-      this.$toast('黑名单管理功能开发中...')
+      this.$toast(this.$t('my.blockTip'))
     },
 
     showFeedback() {
       this.$dialog.prompt({
-        title: '反馈建议',
-        message: '请输入您的建议或意见'
+        title: this.$t('my.feedbackTitle'),
+        message: this.$t('my.feedbackMessage')
       }).then(value => {
         if (value) {
-          this.$toast.success('感谢您的反馈!')
+          this.$toast.success(this.$t('my.feedbackSuccess'))
         }
       }).catch(() => {})
     },
 
     showHelp() {
       this.$dialog.alert({
-        title: '使用帮助',
-        message: `
-使用说明：
-1. 在聊天界面输入消息并发送
-2. 点击翻译按钮可翻译对方消息
-3. 在设置中可切换界面语言
-4. 支持多种语言翻译功能
-        `
+        title: this.$t('my.helpTitle'),
+        message: this.$t('my.helpMessage')
       })
     },
 
     contactSupport() {
       this.$dialog.alert({
-        title: '联系客服',
-        message: '客服邮箱: support@chatapp.com\n客服电话: 400-123-4567\n工作时间: 9:00-18:00'
+        title: this.$t('my.contactTitle'),
+        message: this.$t('my.contactMessage')
       })
     },
 
     shareApp() {
       if (navigator.share) {
         navigator.share({
-          title: 'Vue聊天应用',
-          text: '一个支持实时翻译的聊天应用',
+          title: this.$t('my.shareTitle'),
+          text: this.$t('my.shareText'),
           url: window.location.origin
         })
       } else {
@@ -221,10 +215,10 @@ export default {
         const url = window.location.origin
         if (navigator.clipboard) {
           navigator.clipboard.writeText(url).then(() => {
-            this.$toast.success('链接已复制到剪贴板')
+            this.$toast.success(this.$t('my.linkCopied'))
           })
         } else {
-          this.$toast('请手动复制链接: ' + url)
+          this.$toast(this.$t('my.copyLinkTip', { url }))
         }
       }
     },
@@ -246,7 +240,7 @@ export default {
           this.friendCount = Math.floor(Math.random() * 20) + 1
         }, 1000)
       } catch (error) {
-        console.error('获取统计数据失败:', error)
+        console.error('Failed to fetch stats:', error)
       }
     }
   },

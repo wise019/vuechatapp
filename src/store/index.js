@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '@/utils/http'
+import i18n from '@/i18n'
 
 Vue.use(Vuex)
 
@@ -12,7 +13,7 @@ export default new Vuex.Store({
     contacts: [], // 联系人列表
     currentChat: null, // 当前聊天对象
     unreadCount: 0, // 未读消息数量
-    language: 'zh', // 当前语言
+    language: localStorage.getItem('app_language') || 'zh', // 当前语言
     theme: 'light', // 主题模式
     onlineUsers: [], // 当前在线用户
     readMessages: [] // 已读消息ID
@@ -91,6 +92,7 @@ export default new Vuex.Store({
       state.language = language
       // 持久化到本地存储
       localStorage.setItem('app_language', language)
+      i18n.locale = language
     },
 
     // 设置主题
@@ -120,7 +122,7 @@ export default new Vuex.Store({
           commit('setUser', user)
           return { success: true }
         }
-        return { success: false, message: '登录失败' }
+        return { success: false, message: i18n.t('login.failRetry') }
       } catch (error) {
         return { success: false, message: error.message }
       }
