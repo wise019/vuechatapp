@@ -22,6 +22,16 @@ npm run serve
 npm run build
 ```
 
+## 代码规范
+
+```bash
+# 代码检查
+npm run lint
+
+# 自动修复
+npm run lint:fix
+```
+
 ## 目录结构
 
 ```
