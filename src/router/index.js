@@ -9,46 +9,46 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/home',
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/components/Login.vue')
+    component: () => import('@/components/Login.vue'),
   },
   {
-    path: '/register', 
+    path: '/register',
     name: 'Register',
-    component: () => import('@/components/Register.vue')
+    component: () => import('@/components/Register.vue'),
   },
   {
     path: '/home',
     name: 'Home',
     meta: { tabbar: true, verify: true },
-    component: () => import('@/components/Home.vue')
+    component: () => import('@/components/Home.vue'),
   },
   {
     path: '/message',
-    name: 'Message', 
+    name: 'Message',
     meta: { verify: true, transition: true },
-    component: () => import('@/components/Message.vue')
+    component: () => import('@/components/Message.vue'),
   },
   {
     path: '/my',
     name: 'My',
     meta: { tabbar: true, verify: true },
-    component: () => import('@/components/My.vue')
+    component: () => import('@/components/My.vue'),
   },
   {
     path: '/setting',
     name: 'Setting',
     meta: { verify: true, transition: true },
-    component: () => import('@/components/Setting.vue')
-  }
+    component: () => import('@/components/Setting.vue'),
+  },
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
 // 同步路由状态到vuex
@@ -59,10 +59,10 @@ router.beforeEach((to, from, next) => {
   // 处理路由动画方向
   if (router.isBack) {
     router.isBack = false
-    if (from.matched.some(res => res.meta.transition)) {
+    if (from.matched.some((res) => res.meta.transition)) {
       store.commit('updateDirection', { direction: 'reverse' })
     }
-  } else if (to.matched.some(res => res.meta.transition)) {
+  } else if (to.matched.some((res) => res.meta.transition)) {
     store.commit('updateDirection', { direction: 'forward' })
   } else {
     store.commit('updateDirection', { direction: '' })
@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
 
   // 验证用户登录状态
   let verifyJump = false
-  if (to.matched.some(res => res.meta.verify)) {
+  if (to.matched.some((res) => res.meta.verify)) {
     if (!window.localStorage.getItem('authUser')) {
       verifyJump = true
     } else {

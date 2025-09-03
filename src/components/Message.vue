@@ -1,9 +1,9 @@
 <template>
   <div class="message">
     <!-- 导航栏 -->
-    <van-nav-bar 
-      :title="chatTitle" 
-      left-arrow 
+    <van-nav-bar
+      :title="chatTitle"
+      left-arrow
       @click-left="$router.go(-1)"
       fixed
     >
@@ -18,23 +18,26 @@
         <div
           v-for="(message, index) in messages"
           :key="index"
-          :class="['message-main-item', { 'message-main--mine': message.isMine }]"
+          :class="[
+            'message-main-item',
+            { 'message-main--mine': message.isMine },
+          ]"
         >
           <!-- 用户头像 -->
           <div class="message-main-item__user">
-            <img 
-              :src="message.avatar || defaultAvatar" 
+            <img
+              :src="message.avatar || defaultAvatar"
               :alt="message.userName"
               class="message-main-item__img"
-            >
+            />
           </div>
-          
+
           <!-- 消息内容 -->
           <div class="message-main-item__text">
             {{ message.content }}
-            
+
             <!-- 翻译按钮 -->
-            <div 
+            <div
               v-if="!message.isMine && message.content"
               class="message-main-item__translate-btn"
               @click="translateMessage(message, index)"
@@ -42,8 +45,8 @@
           </div>
 
           <!-- 翻译结果 -->
-          <div 
-            v-if="message.translation" 
+          <div
+            v-if="message.translation"
             class="message-main-item__translation"
           >
             <div class="translation-text">
@@ -60,8 +63,8 @@
         <!-- 语言选择 -->
         <van-col span="7">
           <van-dropdown-menu>
-            <van-dropdown-item 
-              :value="selectedLanguage" 
+            <van-dropdown-item
+              :value="selectedLanguage"
               :options="languageOptions"
               @change="onLanguageChange"
             />
@@ -109,7 +112,7 @@ export default {
       sendLoading: false,
       showMoreActions: false,
       selectedLanguage: 'zh',
-      defaultAvatar: '/images/default-avatar.png'
+      defaultAvatar: '/images/default-avatar.png',
     }
   },
   computed: {
@@ -124,15 +127,23 @@ export default {
         { text: this.$t('language.de'), value: 'de' },
         { text: this.$t('language.fr'), value: 'fr' },
         { text: this.$t('language.ja'), value: 'ja' },
-        { text: this.$t('language.ko'), value: 'ko' }
+        { text: this.$t('language.ko'), value: 'ko' },
       ]
     },
     moreActions() {
       return [
-        { name: this.$t('message.actionClear'), key: 'clear', color: '#ee0a24' },
-        { name: this.$t('message.actionReport'), key: 'report', color: '#ff976a' }
+        {
+          name: this.$t('message.actionClear'),
+          key: 'clear',
+          color: '#ee0a24',
+        },
+        {
+          name: this.$t('message.actionReport'),
+          key: 'report',
+          color: '#ff976a',
+        },
       ]
-    }
+    },
   },
   methods: {
     ...mapActions(['sendMessage', 'fetchMessages']),
@@ -152,7 +163,7 @@ export default {
           content: this.messageInput,
           isMine: true,
           userName: 'Me',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }
 
         // 写入 Vuex
@@ -162,7 +173,7 @@ export default {
         const result = await this.sendMessage({
           content: this.messageInput,
           receiver_id: this.currentChat?.id,
-          language: this.selectedLanguage
+          language: this.selectedLanguage,
         })
 
         if (result.success) {
@@ -184,7 +195,7 @@ export default {
 
       this.$set(this.messages, index, {
         ...message,
-        translating: true
+        translating: true,
       })
 
       try {
@@ -192,14 +203,14 @@ export default {
         const response = await this.$api.post('/translate', {
           text: message.content,
           from: 'auto',
-          to: this.selectedLanguage
+          to: this.selectedLanguage,
         })
 
         if (response.status === 200) {
           this.$set(this.messages, index, {
             ...message,
             translation: response.data.translation,
-            translating: false
+            translating: false,
           })
         }
       } catch (error) {
@@ -207,37 +218,48 @@ export default {
         this.$toast.fail(this.$t('message.translateFail'))
         this.$set(this.messages, index, {
           ...message,
-          translating: false
+          translating: false,
         })
       }
     },
 
     onLanguageChange(value) {
       this.selectedLanguage = value
-      this.$toast(this.$t('message.languageSwitched', { lang: this.getLanguageName(value) }))
+      this.$toast(
+        this.$t('message.languageSwitched', {
+          lang: this.getLanguageName(value),
+        })
+      )
     },
 
     getLanguageName(value) {
-      const option = this.languageOptions.find(item => item.value === value)
+      const option = this.languageOptions.find((item) => item.value === value)
       return option ? option.text : value
     },
 
     setTranslate(language) {
       this.selectedLanguage = language
-      this.$toast(this.$t('message.languageSwitched', { lang: this.getLanguageName(language) }))
+      this.$toast(
+        this.$t('message.languageSwitched', {
+          lang: this.getLanguageName(language),
+        })
+      )
     },
 
     onMoreActionSelect(action) {
       this.showMoreActions = false
 
       if (action.key === 'clear') {
-        this.$dialog.confirm({
-          title: this.$t('message.confirmClearTitle'),
-          message: this.$t('message.confirmClearMessage')
-        }).then(() => {
-          this.setMessages([])
-          this.$toast.success(this.$t('message.chatCleared'))
-        }).catch(() => {})
+        this.$dialog
+          .confirm({
+            title: this.$t('message.confirmClearTitle'),
+            message: this.$t('message.confirmClearMessage'),
+          })
+          .then(() => {
+            this.setMessages([])
+            this.$toast.success(this.$t('message.chatCleared'))
+          })
+          .catch(() => {})
       } else if (action.key === 'report') {
         this.$toast(this.$t('message.reportTip'))
       }
@@ -261,18 +283,18 @@ export default {
           isMine: false,
           userName: 'Bot',
           avatar: '/images/bot-avatar.png',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         })
         this.scrollToBottom()
       }, 3000)
-    }
+    },
   },
 
   mounted() {
     this.scrollToBottom()
     // 模拟接收消息
     this.simulateReceiveMessage()
-  }
+  },
 }
 </script>
 
@@ -302,28 +324,28 @@ export default {
   min-height: 43px;
   display: flex;
   align-items: flex-start;
-  
+
   &.message-main--mine {
     flex-direction: row-reverse;
-    
+
     .message-main-item__user {
       right: 3px;
       left: auto;
     }
-    
+
     .message-main-item__text {
       background-color: #07c160;
       color: #fff;
       margin-left: 0;
       margin-right: 16px;
-      
+
       &:after {
         left: auto;
         right: -10px;
         border-color: #07c160 transparent transparent;
       }
     }
-    
+
     .message-main-item__translate-btn {
       left: -8px;
     }
@@ -354,7 +376,7 @@ export default {
   max-width: 70%;
   margin-left: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  
+
   &:after {
     content: '';
     position: absolute;
@@ -379,7 +401,7 @@ export default {
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  
+
   &:hover {
     background-color: #f0f0f0;
   }
@@ -388,7 +410,7 @@ export default {
 .message-main-item__translation {
   margin-top: 8px;
   margin-left: 56px;
-  
+
   .translation-text {
     padding: 8px 12px;
     background-color: rgba(0, 0, 0, 0.05);
@@ -396,7 +418,7 @@ export default {
     font-size: 13px;
     color: #666;
   }
-  
+
   .message-main--mine & {
     margin-left: 0;
     margin-right: 56px;
@@ -407,7 +429,7 @@ export default {
   background-color: #fff;
   padding: 12px 16px;
   border-top: 1px solid #eee;
-  
+
   .message-send__btn {
     width: 100%;
     height: 40px;
@@ -423,11 +445,11 @@ export default {
   .message-main-item {
     padding: 0 50px;
   }
-  
+
   .message-main-item__text {
     max-width: 75%;
   }
-  
+
   .message-send {
     padding: 10px 12px;
   }

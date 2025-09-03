@@ -15,10 +15,11 @@ export default {
       const response = await http.post('/oauth/token', {
         grant_type: 'password',
         client_id: process.env.VUE_APP_CLIENT_ID || 2,
-        client_secret: process.env.VUE_APP_CLIENT_SECRET || 'your-client-secret',
+        client_secret:
+          process.env.VUE_APP_CLIENT_SECRET || 'your-client-secret',
         username: email,
         password: password,
-        scope: '*'
+        scope: '*',
       })
 
       if (response.status === 200 && response.data) {
@@ -30,14 +31,14 @@ export default {
           token_type: response.data.token_type,
           user: response.data.user || {
             email: email,
-            name: response.data.name || email.split('@')[0]
-          }
+            name: response.data.name || email.split('@')[0],
+          },
         }
 
         localStorage.setItem('authUser', JSON.stringify(userData))
-        
+
         // 设置token过期时间
-        const expiresAt = new Date().getTime() + (response.data.expires_in * 1000)
+        const expiresAt = new Date().getTime() + response.data.expires_in * 1000
         localStorage.setItem('tokenExpiresAt', expiresAt.toString())
 
         return true
@@ -70,8 +71,9 @@ export default {
         grant_type: 'refresh_token',
         refresh_token: userData.refresh_token,
         client_id: process.env.VUE_APP_CLIENT_ID || 2,
-        client_secret: process.env.VUE_APP_CLIENT_SECRET || 'your-client-secret',
-        scope: '*'
+        client_secret:
+          process.env.VUE_APP_CLIENT_SECRET || 'your-client-secret',
+        scope: '*',
       })
 
       if (response.status === 200 && response.data) {
@@ -80,12 +82,12 @@ export default {
           ...userData,
           access_token: response.data.access_token,
           refresh_token: response.data.refresh_token || userData.refresh_token,
-          expires_in: response.data.expires_in
+          expires_in: response.data.expires_in,
         }
 
         localStorage.setItem('authUser', JSON.stringify(newUserData))
-        
-        const expiresAt = new Date().getTime() + (response.data.expires_in * 1000)
+
+        const expiresAt = new Date().getTime() + response.data.expires_in * 1000
         localStorage.setItem('tokenExpiresAt', expiresAt.toString())
 
         return true
@@ -114,7 +116,7 @@ export default {
     const now = new Date().getTime()
 
     // 提前5分钟判断为过期，避免在请求过程中过期
-    return now < (expiresAt - 5 * 60 * 1000)
+    return now < expiresAt - 5 * 60 * 1000
   },
 
   /**
@@ -141,5 +143,5 @@ export default {
   logout() {
     localStorage.removeItem('authUser')
     localStorage.removeItem('tokenExpiresAt')
-  }
+  },
 }

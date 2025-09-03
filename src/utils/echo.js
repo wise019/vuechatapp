@@ -21,13 +21,17 @@ export default {
       // 获取用户认证信息
       const authUser = localStorage.getItem('authUser')
       if (!authUser) {
-        console.warn('User not logged in, cannot establish WebSocket connection')
+        console.warn(
+          'User not logged in, cannot establish WebSocket connection'
+        )
         return
       }
 
       const userData = JSON.parse(authUser)
       if (!userData.access_token) {
-        console.warn('Access token missing, cannot establish WebSocket connection')
+        console.warn(
+          'Access token missing, cannot establish WebSocket connection'
+        )
         return
       }
 
@@ -42,9 +46,9 @@ export default {
         encrypted: true,
         auth: {
           headers: {
-            Authorization: `Bearer ${userData.access_token}`
-          }
-        }
+            Authorization: `Bearer ${userData.access_token}`,
+          },
+        },
       })
 
       // 监听连接事件
@@ -65,7 +69,6 @@ export default {
       // 存储实例到全局
       window.Echo = echoInstance
       window.client = echoInstance
-
     } catch (error) {
       console.error('Failed to initialize Echo:', error)
       Toast.fail(i18n.t('echo.initFail'))
@@ -91,7 +94,8 @@ export default {
       }
 
       // 监听私有频道 - 接收个人消息
-      echoInstance.private(`App.User.${userId}`)
+      echoInstance
+        .private(`App.User.${userId}`)
         .listen('MessageSent', (event) => {
           console.log('New message received:', event)
           this.handleNewMessage(event)
@@ -102,7 +106,8 @@ export default {
         })
 
       // 监听在线状态频道
-      echoInstance.join('online')
+      echoInstance
+        .join('online')
         .here((users) => {
           console.log('Online users:', users)
           store.commit('setOnlineUsers', users)
@@ -117,7 +122,6 @@ export default {
         })
 
       console.log('Channel listening setup complete')
-
     } catch (error) {
       console.error('Failed to setup channel listening:', error)
     }
@@ -135,7 +139,7 @@ export default {
         receiver_id: event.message.receiver_id,
         created_at: event.message.created_at,
         sender: event.sender,
-        isMine: false
+        isMine: false,
       }
 
       // 添加到消息列表
@@ -146,16 +150,18 @@ export default {
 
       // 显示通知
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(i18n.t('echo.newMessage', { name: event.sender.name }), {
-          body: message.content,
-          icon: event.sender.avatar || '/images/default-avatar.png',
-          tag: `message-${message.id}`
-        })
+        new Notification(
+          i18n.t('echo.newMessage', { name: event.sender.name }),
+          {
+            body: message.content,
+            icon: event.sender.avatar || '/images/default-avatar.png',
+            tag: `message-${message.id}`,
+          }
+        )
       }
 
       // 播放提示音
       this.playNotificationSound()
-
     } catch (error) {
       console.error('Failed to handle new message:', error)
     }
@@ -185,7 +191,7 @@ export default {
 
       const audio = new Audio('/sounds/notification.mp3')
       audio.volume = 0.5
-      audio.play().catch(error => {
+      audio.play().catch((error) => {
         console.warn('Failed to play notification sound:', error)
       })
     } catch (error) {
@@ -225,5 +231,5 @@ export default {
    */
   getInstance() {
     return echoInstance
-  }
+  },
 }

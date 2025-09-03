@@ -10,13 +10,13 @@ const http = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    Accept: 'application/json',
+  },
 })
 
 // 请求拦截器
 http.interceptors.request.use(
-  config => {
+  (config) => {
     // 添加认证token
     const authUser = localStorage.getItem('authUser')
     if (authUser) {
@@ -32,14 +32,18 @@ http.interceptors.request.use(
     }
 
     // 如果是POST请求且数据是对象，则序列化为form格式
-    if (config.method === 'post' && config.data && typeof config.data === 'object') {
+    if (
+      config.method === 'post' &&
+      config.data &&
+      typeof config.data === 'object'
+    ) {
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
       config.data = qs.stringify(config.data)
     }
 
     return config
   },
-  error => {
+  (error) => {
     console.error('Request configuration error:', error)
     return Promise.reject(error)
   }
@@ -47,16 +51,16 @@ http.interceptors.request.use(
 
 // 响应拦截器
 http.interceptors.response.use(
-  response => {
+  (response) => {
     return response
   },
-  error => {
+  (error) => {
     // 处理网络错误
     if (!error.response) {
       Toast.fail(i18n.t('http.networkError'))
       return Promise.resolve({
         status: -1,
-        data: { error: i18n.t('http.networkErrorShort') }
+        data: { error: i18n.t('http.networkErrorShort') },
       })
     }
 
@@ -67,30 +71,31 @@ http.interceptors.response.use(
 
 // 统一的响应状态检查
 function checkStatus(response) {
-  if (response && (
-    response.status === 200 || 
-    response.status === 422 || 
-    response.status === 401
-  )) {
+  if (
+    response &&
+    (response.status === 200 ||
+      response.status === 422 ||
+      response.status === 401)
+  ) {
     return response
   }
-  
+
   return {
     status: -404,
-    data: { error: i18n.t('http.requestException') }
+    data: { error: i18n.t('http.requestException') },
   }
 }
 
 // 统一的错误处理
 function checkCode(response) {
   const res = checkStatus(response)
-  
+
   // 请求异常
   if (res.status === -404) {
     Toast.fail(res.data.error || i18n.t('http.requestFail'))
     return res
   }
-  
+
   // 认证失败，跳转登录页
   if (res.status === 401) {
     localStorage.removeItem('authUser')
@@ -98,11 +103,11 @@ function checkCode(response) {
     Toast.fail(i18n.t('http.loginExpired'))
     return res
   }
-  
+
   // 表单验证错误
   if (res.status === 422 && res.data) {
     let errorMessage = i18n.t('http.validationFailed')
-    
+
     if (res.data.error) {
       errorMessage = res.data.error
     } else if (res.data.errors) {
@@ -115,11 +120,11 @@ function checkCode(response) {
         }
       }
     }
-    
+
     Toast.fail(errorMessage)
     return res
   }
-  
+
   return res
 }
 
@@ -147,12 +152,14 @@ export default {
 
   // 上传文件
   upload(url, formData) {
-    return http.post(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(checkCode)
-  }
+    return http
+      .post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(checkCode)
+  },
 }
 
 // 将http实例挂载到Vue原型上

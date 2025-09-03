@@ -1,7 +1,11 @@
 <template>
   <div class="login">
     <!-- 导航栏 -->
-    <van-nav-bar :title="$t('login.title')" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      :title="$t('login.title')"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
     <!-- 登录表单 -->
     <div class="login__form">
@@ -63,16 +67,16 @@ export default {
     return {
       forms: {
         email: '',
-        password: ''
+        password: '',
       },
       errors: {},
-      loadingLogin: false
+      loadingLogin: false,
     }
   },
   computed: {
     disableLogin() {
       return !this.forms.email || !this.forms.password || this.loadingLogin
-    }
+    },
   },
   methods: {
     ...mapActions(['login']),
@@ -80,7 +84,7 @@ export default {
     async submit() {
       // 清除之前的错误
       this.errors = {}
-      
+
       // 简单验证
       if (!this.forms.email) {
         this.errors.email = this.$t('login.emailRequired')
@@ -104,14 +108,17 @@ export default {
       try {
         const result = await this.login({
           email: this.forms.email,
-          password: this.forms.password
+          password: this.forms.password,
         })
 
         if (result && result.success) {
           this.$toast.success(this.$t('login.success'))
           this.$router.push('/home')
         } else {
-          const message = result && result.message ? result.message : this.$t('login.failCheck')
+          const message =
+            result && result.message
+              ? result.message
+              : this.$t('login.failCheck')
           this.$toast.fail(message)
         }
       } catch (error) {
@@ -121,7 +128,7 @@ export default {
         this.loadingLogin = false
       }
     },
-  }
+  },
 }
 </script>
 
@@ -142,12 +149,12 @@ export default {
 .login__register--link {
   text-align: center;
   margin-top: 16px;
-  
+
   a {
     color: #1989fa;
     text-decoration: none;
     font-size: 14px;
-    
+
     &:hover {
       text-decoration: underline;
     }
