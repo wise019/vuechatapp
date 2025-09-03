@@ -1,7 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'
-import router from '@/router'
+import router from '../router'
 import { Toast } from 'vant'
+import Vue from 'vue'
 
 // 创建axios实例
 const http = axios.create({
@@ -123,7 +124,7 @@ function checkCode(response) {
 }
 
 // 导出HTTP方法
-export default {
+const api = {
   // GET请求
   get(url, params = {}) {
     return http.get(url, { params }).then(checkCode)
@@ -154,6 +155,8 @@ export default {
   }
 }
 
-// 将http实例挂载到Vue原型上
-import Vue from 'vue'
-Vue.prototype.$api = http
+// 将封装后的API对象挂载到Vue原型上
+Vue.prototype.$api = api
+
+export { http, checkCode }
+export default api
